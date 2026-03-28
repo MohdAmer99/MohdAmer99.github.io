@@ -646,7 +646,7 @@
             .sidebar h1 { font-size: 1.85rem; }
             .sidebar-title { font-size: 0.9rem; margin-bottom: 14px; }
             .sidebar-intro { font-size: 0.85rem; }
-            .sidebar-cv { padding: 8px 16px; font-size: 0.8rem; margin-top: 18px; }
+            .sidebar-cv { padding: 10px 20px; font-size: 0.82rem; margin-top: 20px; margin-bottom: 8px; }
             .sidebar-stats { gap: 10px 24px; }
             .sidebar-stat-number { font-size: 1.2rem; }
             .sidebar-social { margin-top: 4px; }
@@ -985,18 +985,18 @@
             const narrow = w < 400;
             if (narrow) {
                 labelL.style.left = '50%';
-                labelL.style.top = '2px';
+                labelL.style.top = '0px';
                 labelL.style.transform = 'translateX(-50%)';
                 labelR.style.left = '50%';
-                labelR.style.top = (h * 0.5) + 'px';
+                labelR.style.top = (h * 0.5 - 8) + 'px';
                 labelR.style.transform = 'translateX(-50%)';
                 divider.style.display = 'none';
             } else {
                 labelL.style.left = (w * 0.25) + 'px';
-                labelL.style.top = '28px';
+                labelL.style.top = '8px';
                 labelL.style.transform = 'translateX(-50%)';
                 labelR.style.left = (w * 0.75) + 'px';
-                labelR.style.top = '28px';
+                labelR.style.top = '8px';
                 labelR.style.transform = 'translateX(-50%)';
                 divider.style.display = '';
             }
@@ -1018,7 +1018,7 @@
             if (narrow) {
                 // Stack: clinical top half, technical bottom half
                 const colX = cw * 0.5;
-                const padY = ch * 0.06;
+                const padY = ch * 0.10;
                 const halfH = (ch - padY * 3) / 2;
                 const gapC = halfH / (clinicalCount - 1);
                 const gapT = halfH / (techCount - 1);
@@ -1038,7 +1038,7 @@
                 // Two columns side by side
                 const colL = cw * 0.25;
                 const colR = cw * 0.75;
-                const padY = ch * 0.12;
+                const padY = ch * 0.18;
                 const usable = ch - padY * 2;
                 const gapC = usable / (clinicalCount - 1);
                 const gapT = usable / (techCount - 1);
