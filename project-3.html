@@ -206,10 +206,22 @@
             padding: 4px 12px; background: rgba(148,199,199,0.06); border-radius: 50px;
             border: 1px solid var(--border);
         }
-        .screenshot-body { padding: 24px; background: rgba(0,0,0,0.15); }
+        .screenshot-body {
+            padding: 24px; background: rgba(0,0,0,0.15);
+            position: relative;
+        }
         .screenshot-body img {
             width: 100%; border-radius: 8px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+            -webkit-user-select: none; user-select: none;
+            pointer-events: none;
+        }
+        .screenshot-body::after {
+            content: 'mohamedamer.dev';
+            position: absolute; bottom: 34px; right: 34px;
+            font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em;
+            color: rgba(148,199,199,0.18);
+            pointer-events: none; user-select: none;
         }
         .screenshot-caption {
             padding: 16px 24px; font-size: 0.85rem; color: var(--text);
@@ -525,6 +537,14 @@
             });
         }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
         revealElements.forEach(el => revealObserver.observe(el));
+
+        // Image protection
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName === 'IMG') { e.preventDefault(); }
+        });
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'IMG') { e.preventDefault(); }
+        });
     </script>
 </body>
 </html>
