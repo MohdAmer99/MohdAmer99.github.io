@@ -214,13 +214,16 @@
             width: 100%; border-radius: 8px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.3);
             -webkit-user-select: none; user-select: none;
-            pointer-events: none;
+        }
+        .screenshot-body::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 2; cursor: default;
         }
         .screenshot-body::after {
-            content: 'mohamedamer.dev';
-            position: absolute; bottom: 34px; right: 34px;
+            content: 'MohdAmer99.github.io';
+            position: absolute; bottom: 34px; right: 34px; z-index: 3;
             font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em;
-            color: rgba(148,199,199,0.18);
+            color: rgba(148,199,199,0.25);
             pointer-events: none; user-select: none;
         }
         .screenshot-caption {
@@ -240,10 +243,23 @@
         .mobile-screenshot-body {
             padding: 28px; background: rgba(0,0,0,0.15);
             display: flex; justify-content: center;
+            position: relative;
         }
         .mobile-screenshot-body img {
             max-height: 480px; width: auto; border-radius: 12px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+            -webkit-user-select: none; user-select: none;
+        }
+        .mobile-screenshot-body::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 2; cursor: default;
+        }
+        .mobile-screenshot-body::after {
+            content: 'MohdAmer99.github.io';
+            position: absolute; bottom: 38px; right: 38px; z-index: 3;
+            font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em;
+            color: rgba(148,199,199,0.25);
+            pointer-events: none; user-select: none;
         }
 
         /* ===== CTA ===== */
@@ -572,11 +588,12 @@
         revealElements.forEach(el => revealObserver.observe(el));
 
         // Image protection
-        document.addEventListener('contextmenu', function(e) {
-            if (e.target.tagName === 'IMG') { e.preventDefault(); }
-        });
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
         document.addEventListener('dragstart', function(e) {
             if (e.target.tagName === 'IMG') { e.preventDefault(); }
+        });
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U')) { e.preventDefault(); }
         });
     </script>
 </body>
