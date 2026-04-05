@@ -224,12 +224,8 @@
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             z-index: 2; cursor: default;
         }
-        .screenshot-body::after {
-            content: 'MohdAmer99.github.io';
-            position: absolute; bottom: 34px; right: 34px; z-index: 3;
-            font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em;
-            color: rgba(148,199,199,0.25);
-            pointer-events: none; user-select: none;
+        @media print {
+            body { display: none !important; }
         }
 
         .screenshot-caption {
@@ -250,9 +246,13 @@
 
         .feature-img-wrapper {
             background: rgba(0,0,0,0.15); border-radius: 12px; padding: 24px 32px;
-            border: 1px solid var(--border);
+            border: 1px solid var(--border); position: relative;
         }
-        .feature-img-wrapper img { height: 48px; width: auto; }
+        .feature-img-wrapper::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 2; cursor: default;
+        }
+        .feature-img-wrapper img { height: 48px; width: auto; -webkit-user-select: none; user-select: none; }
 
         .feature-text h3 {
             font-size: 1.05rem; font-weight: 700; color: var(--heading);
