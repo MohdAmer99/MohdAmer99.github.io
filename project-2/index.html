@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Equipment Tracking System | Mohamed Amer Almajed</title>
+    <meta name="description" content="A web-based system for real-time tracking of medical equipment across hospital departments, improving accountability and reducing losses.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0f172a;
+            --bg-light: #1e293b;
+            --bg-card: rgba(148,199,199,0.04);
+            --bg-card-hover: rgba(148,199,199,0.08);
+            --accent: #5eead4;
+            --accent-dim: #2dd4bf;
+            --accent-muted: rgba(94,234,212,0.1);
+            --accent-warm: #fbbf24;
+            --heading: #e2e8f0;
+            --text: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(148,199,199,0.08);
+            --border-strong: rgba(148,199,199,0.15);
+            --red: #f87171;
+            --red-muted: rgba(248,113,113,0.1);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,0.35);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.4);
+            --radius: 10px;
+            --radius-lg: 16px;
+            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text); line-height: 1.7;
+            background: var(--bg); -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        p { text-align: justify; }
+        a { color: var(--heading); text-decoration: none; transition: all var(--transition); }
+        a:hover { color: var(--accent); }
+        img { max-width: 100%; display: block; }
+        ::selection { background: rgba(94,234,212,0.2); color: var(--heading); }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        .reveal {
+            opacity: 0; transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.12s; }
+        .reveal-delay-2 { transition-delay: 0.24s; }
+        .reveal-delay-3 { transition-delay: 0.36s; }
+
+        /* ===== BACK NAV ===== */
+        .back-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(15,23,42,0.85);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            transition: box-shadow var(--transition);
+        }
+        .back-nav.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .back-nav-inner {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between; height: 64px;
+        }
+        .back-link {
+            display: inline-flex; align-items: center; gap: 10px;
+            font-size: 0.88rem; font-weight: 600; color: var(--text);
+        }
+        .back-link:hover { color: var(--accent); }
+        .back-link i { font-size: 0.78rem; transition: transform var(--transition); }
+        .back-link:hover i { transform: translateX(-4px); }
+        .back-nav-label { font-size: 0.82rem; font-weight: 500; color: var(--text-muted); }
+
+        /* ===== PROJECT HERO ===== */
+        .project-hero {
+            padding: 140px 0 80px;
+            background: linear-gradient(160deg, #0f172a 0%, #162033 40%, #1e293b 100%);
+            position: relative; overflow: hidden;
+        }
+        .project-hero::before {
+            content: ''; position: absolute; top: -40%; right: -15%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(94,234,212,0.06) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .project-hero .container { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        .project-hero-label {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 0.78rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--accent); margin-bottom: 20px;
+        }
+        .project-hero-label span {
+            width: 32px; height: 1px; background: var(--accent); opacity: 0.4; display: inline-block;
+        }
+        .project-hero h1 {
+            font-size: 2.8rem; font-weight: 800; color: var(--heading);
+            line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 20px;
+            max-width: 700px; text-align: left;
+        }
+        .project-hero-desc {
+            font-size: 1.1rem; color: var(--text);
+            max-width: 620px; line-height: 1.8; margin-bottom: 0;
+        }
+
+        /* ===== CONTENT ===== */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        .content-section { padding: 80px 0; }
+        .content-section-alt { padding: 80px 0; background: var(--bg-light); }
+
+        .content-section h2, .content-section-alt h2 {
+            font-size: 1.6rem; font-weight: 700; color: var(--heading);
+            margin-bottom: 12px; letter-spacing: -0.02em; text-align: left;
+        }
+        .section-lead {
+            font-size: 1rem; color: var(--text); max-width: 680px;
+            line-height: 1.8; margin-bottom: 48px;
+        }
+
+        /* ===== PROBLEM / SOLUTION ===== */
+        .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+        .ps-card {
+            padding: 32px; border-radius: var(--radius-lg);
+            border: 1px solid var(--border-strong); background: var(--bg-card);
+            transition: all var(--transition);
+        }
+        .ps-card:hover { background: var(--bg-card-hover); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .ps-card-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; margin-bottom: 20px;
+        }
+        .ps-card-icon.problem { background: var(--red-muted); color: var(--red); }
+        .ps-card-icon.solution { background: var(--accent-muted); color: var(--accent); }
+        .ps-card h3 {
+            font-size: 1.05rem; font-weight: 700; color: var(--heading);
+            margin-bottom: 12px; text-align: left;
+        }
+        .ps-card ul { list-style: none; padding: 0; margin: 0; }
+        .ps-card ul li {
+            font-size: 0.9rem; color: var(--text); line-height: 1.75;
+            padding: 6px 0 6px 20px; position: relative;
+        }
+        .ps-card ul li::before {
+            content: ''; position: absolute; left: 0; top: 14px;
+            width: 6px; height: 6px; border-radius: 50%;
+        }
+        .ps-card.problem-card ul li::before { background: var(--red); opacity: 0.5; }
+        .ps-card.solution-card ul li::before { background: var(--accent); opacity: 0.5; }
+
+        /* ===== FEATURE CARDS ===== */
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .feature-card {
+            padding: 32px; border-radius: var(--radius-lg);
+            border: 1px solid var(--border-strong); background: var(--bg-card);
+            transition: all var(--transition); text-align: center;
+        }
+        .feature-card:hover { border-color: rgba(94,234,212,0.3); box-shadow: var(--shadow-md); transform: translateY(-3px); }
+        .feature-card-icon {
+            width: 52px; height: 52px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; margin: 0 auto 18px;
+            background: var(--accent-muted); color: var(--accent);
+        }
+        .feature-card h4 {
+            font-size: 0.95rem; font-weight: 700; color: var(--heading);
+            margin-bottom: 8px;
+        }
+        .feature-card p { font-size: 0.85rem; color: var(--text); line-height: 1.65; text-align: center; }
+
+        /* ===== SCREENSHOT SHOWCASE ===== */
+        .screenshot-showcase { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+
+        .screenshot-item {
+            background: var(--bg-card); border-radius: var(--radius-lg);
+            border: 1px solid var(--border-strong); overflow: hidden;
+            transition: all var(--transition);
+        }
+        .screenshot-item:hover { box-shadow: var(--shadow-xl); transform: translateY(-3px); border-color: rgba(94,234,212,0.2); }
+        .screenshot-item.full-width { grid-column: 1 / -1; }
+
+        .screenshot-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 24px; border-bottom: 1px solid var(--border);
+        }
+        .screenshot-title { display: flex; align-items: center; gap: 10px; }
+        .screenshot-dot {
+            width: 10px; height: 10px; border-radius: 50%; background: var(--accent); opacity: 0.5;
+        }
+        .screenshot-title span { font-size: 0.85rem; font-weight: 600; color: var(--heading); }
+        .screenshot-badge {
+            font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.06em; color: var(--text-muted);
+            padding: 4px 12px; background: rgba(148,199,199,0.06); border-radius: 50px;
+            border: 1px solid var(--border);
+        }
+        .screenshot-body {
+            padding: 24px; background: rgba(0,0,0,0.15);
+            position: relative;
+        }
+        .screenshot-body img {
+            width: 100%; border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+            -webkit-user-select: none; user-select: none;
+        }
+        .screenshot-body::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 2; cursor: default;
+        }
+        @media print {
+            body { display: none !important; }
+        }
+        .screenshot-caption {
+            padding: 16px 24px; font-size: 0.85rem; color: var(--text);
+            line-height: 1.6; border-top: 1px solid var(--border);
+            text-align: justify;
+        }
+
+        /* Mobile app screenshots */
+        .mobile-showcase { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 40px; }
+        .mobile-screenshot-item {
+            background: var(--bg-card); border-radius: var(--radius-lg);
+            border: 1px solid var(--border-strong); overflow: hidden;
+            transition: all var(--transition);
+        }
+        .mobile-screenshot-item:hover { box-shadow: var(--shadow-xl); transform: translateY(-3px); border-color: rgba(94,234,212,0.2); }
+        .mobile-screenshot-body {
+            padding: 28px; background: rgba(0,0,0,0.15);
+            display: flex; justify-content: center;
+            position: relative;
+        }
+        .mobile-screenshot-body img {
+            max-height: 480px; width: auto; border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+            -webkit-user-select: none; user-select: none;
+        }
+        .mobile-screenshot-body::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 2; cursor: default;
+        }
+
+        /* ===== CTA ===== */
+        .project-cta {
+            padding: 80px 0; text-align: center;
+            background: linear-gradient(160deg, #0f172a 0%, #134e4a 100%);
+        }
+        .project-cta h2 {
+            font-size: 1.8rem; font-weight: 700; color: var(--heading);
+            margin-bottom: 12px; text-align: center;
+        }
+        .project-cta p {
+            font-size: 1rem; color: var(--text);
+            margin-bottom: 32px; text-align: center;
+        }
+        .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 14px 28px; border-radius: 8px; font-size: 0.92rem;
+            font-weight: 600; cursor: pointer; transition: all var(--transition);
+            border: none; font-family: inherit;
+        }
+        .btn-white { background: var(--accent); color: var(--bg); }
+        .btn-white:hover { background: var(--accent-dim); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(94,234,212,0.25); color: var(--bg); }
+        .btn-ghost { background: transparent; color: var(--heading); border: 1.5px solid var(--border-strong); }
+        .btn-ghost:hover { background: var(--bg-card-hover); border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+        /* ===== DISCLAIMER ===== */
+        .disclaimer-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;
+            background: rgba(15,23,42,0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 1; transition: opacity 0.4s ease;
+        }
+        .disclaimer-overlay.hidden { opacity: 0; pointer-events: none; }
+        .disclaimer-box {
+            background: var(--bg-light); border-radius: var(--radius-lg);
+            padding: 44px 40px; max-width: 520px; width: 90%;
+            box-shadow: var(--shadow-xl); text-align: center;
+            border: 1px solid var(--border-strong);
+            transform: scale(1); transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        .disclaimer-overlay.hidden .disclaimer-box { transform: scale(0.95); }
+        .disclaimer-icon {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: var(--accent-muted); display: flex;
+            align-items: center; justify-content: center;
+            margin: 0 auto 24px; color: var(--accent); font-size: 1.3rem;
+        }
+        .disclaimer-box h3 {
+            font-size: 1.15rem; font-weight: 700; color: var(--heading);
+            margin-bottom: 14px; text-align: center;
+        }
+        .disclaimer-box p {
+            font-size: 0.9rem; color: var(--text); line-height: 1.75;
+            margin-bottom: 28px; text-align: center;
+        }
+        .disclaimer-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 13px 36px; border-radius: 8px; font-size: 0.9rem;
+            font-weight: 600; cursor: pointer; transition: all var(--transition);
+            border: none; font-family: inherit;
+            background: var(--accent); color: var(--bg);
+        }
+        .disclaimer-btn:hover { background: var(--accent-dim); transform: translateY(-1px); box-shadow: 0 4px 15px rgba(94,234,212,0.25); }
+
+        /* ===== FOOTER ===== */
+        .footer { background: rgba(0,0,0,0.2); padding: 32px 0; text-align: center; }
+        .footer p { color: var(--text-muted); font-size: 0.82rem; text-align: center; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .project-hero { padding: 110px 0 50px; }
+            .project-hero h1 { font-size: 1.8rem; }
+            .project-hero-desc { font-size: 0.95rem; }
+            .ps-grid { grid-template-columns: 1fr; gap: 16px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .screenshot-showcase { grid-template-columns: 1fr; gap: 16px; }
+            .mobile-showcase { grid-template-columns: 1fr; gap: 16px; }
+            .mobile-screenshot-body img { max-height: 360px; }
+            .content-section, .content-section-alt { padding: 50px 0; }
+            .content-section h2, .content-section-alt h2 { font-size: 1.35rem; }
+            .section-lead { font-size: 0.9rem; margin-bottom: 32px; }
+            .cta-buttons { flex-direction: column; align-items: center; }
+            .btn { width: 100%; justify-content: center; padding: 13px 20px; }
+            .project-cta h2 { font-size: 1.4rem; }
+            .disclaimer-box { padding: 28px 24px; width: 92%; }
+        }
+
+        @media (max-width: 480px) {
+            .back-nav-inner { padding: 0 14px; height: 52px; }
+            .back-link { font-size: 0.82rem; }
+            .back-nav-label { font-size: 0.75rem; }
+            .project-hero { padding: 90px 0 40px; }
+            .project-hero h1 { font-size: 1.5rem; }
+            .project-hero-desc { font-size: 0.88rem; }
+            .project-hero-label { font-size: 0.72rem; margin-bottom: 14px; }
+            .container { padding: 0 16px; }
+            .content-section, .content-section-alt { padding: 40px 0; }
+            .content-section h2, .content-section-alt h2 { font-size: 1.2rem; }
+            .section-lead { font-size: 0.85rem; margin-bottom: 28px; }
+            .ps-card { padding: 22px; }
+            .ps-card h3 { font-size: 0.95rem; }
+            .ps-card ul li { font-size: 0.83rem; }
+            .feature-card { padding: 24px 20px; }
+            .feature-card h4 { font-size: 0.88rem; }
+            .feature-card p { font-size: 0.8rem; }
+            .feature-card-icon { width: 44px; height: 44px; font-size: 1rem; }
+            .screenshot-header { padding: 14px 16px; }
+            .screenshot-title span { font-size: 0.8rem; }
+            .screenshot-badge { font-size: 0.65rem; padding: 3px 8px; }
+            .screenshot-body { padding: 14px; }
+            .screenshot-caption { padding: 12px 16px; font-size: 0.8rem; }
+            .mobile-screenshot-body { padding: 18px; }
+            .mobile-screenshot-body img { max-height: 280px; }
+            .mobile-showcase { margin-top: 24px; }
+            .disclaimer-box { padding: 24px 18px; width: 94%; }
+            .disclaimer-box h3 { font-size: 1.05rem; }
+            .disclaimer-box p { font-size: 0.83rem; }
+            .disclaimer-icon { width: 48px; height: 48px; font-size: 1.1rem; }
+            .btn { font-size: 0.85rem; padding: 12px 16px; }
+            .project-cta { padding: 50px 0; }
+            .project-cta h2 { font-size: 1.25rem; }
+            .project-cta p { font-size: 0.88rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- DISCLAIMER -->
+    <div class="disclaimer-overlay" id="disclaimerOverlay">
+        <div class="disclaimer-box">
+            <div class="disclaimer-icon"><i class="fas fa-info-circle"></i></div>
+            <h3>Disclaimer</h3>
+            <p>All data presented in this project, including device names, serial numbers, and inventory details, is entirely fictitious and used solely for demonstration purposes. It does not represent or relate to any real institution, entity, or individual.</p>
+            <button class="disclaimer-btn" onclick="dismissDisclaimer()">I Understand</button>
+        </div>
+    </div>
+
+    <!-- BACK NAV -->
+    <nav class="back-nav" id="backNav">
+        <div class="back-nav-inner">
+            <a href="../main/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
+            <span class="back-nav-label">Project 2 of 5</span>
+        </div>
+    </nav>
+
+    <!-- PROJECT HERO -->
+    <section class="project-hero">
+        <div class="container">
+            <div class="project-hero-label"><span></span> Project 2</div>
+            <h1>Medical Equipment Tracking System</h1>
+            <p class="project-hero-desc">A full web-based platform that gives hospitals real-time visibility into every piece of medical equipment across departments. From location tracking to malfunction reporting, every device is accounted for. The system is designed to be fully scalable and can be customized to accommodate the specific operational workflows, departmental structures, and compliance requirements of any healthcare institution.</p>
+        </div>
+    </section>
+
+    <!-- PROBLEM & SOLUTION -->
+    <div class="content-section">
+        <div class="container">
+            <h2 class="reveal">The Challenge &amp; The Solution</h2>
+            <p class="section-lead reveal reveal-delay-1">Hospitals operate with thousands of medical devices spread across multiple floors and departments. Knowing where a device is, whether it works, and when it needs maintenance should not require a phone call.</p>
+            <div class="ps-grid">
+                <div class="ps-card problem-card reveal reveal-delay-1">
+                    <div class="ps-card-icon problem"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h3>Before</h3>
+                    <ul>
+                        <li>No centralized system to track equipment location</li>
+                        <li>Malfunctioning devices go unreported for days</li>
+                        <li>Manual paper logs for maintenance schedules</li>
+                        <li>Equipment lost between departments with no accountability</li>
+                        <li>No way to search by device name or serial number</li>
+                    </ul>
+                </div>
+                <div class="ps-card solution-card reveal reveal-delay-2">
+                    <div class="ps-card-icon solution"><i class="fas fa-check-circle"></i></div>
+                    <h3>After</h3>
+                    <ul>
+                        <li>Real-time equipment tracking across all departments</li>
+                        <li>Instant malfunction reporting and escalation workflow</li>
+                        <li>Automated maintenance scheduling and reminders</li>
+                        <li>Full audit trail for every device movement and transfer</li>
+                        <li>Powerful search by name or serial across all sections</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREENSHOTS -->
+    <div class="content-section">
+        <div class="container">
+            <h2 class="reveal">System in Action</h2>
+            <p class="section-lead reveal reveal-delay-1">A look inside the platform that brings order to hospital equipment management.</p>
+
+            <div class="screenshot-showcase">
+                <div class="screenshot-item reveal reveal-delay-1">
+                    <div class="screenshot-header">
+                        <div class="screenshot-title">
+                            <div class="screenshot-dot"></div>
+                            <span>Universal Device Search</span>
+                        </div>
+                        <div class="screenshot-badge">Search Module</div>
+                    </div>
+                    <div class="screenshot-body">
+                        <img src="../equip-search.png" alt="Search interface with toggle between name and serial number, searching across all device sections">
+                    </div>
+                    <div class="screenshot-caption">
+                        Toggle between name-based and serial-based search. Queries span all sections simultaneously, including active devices, those in repair, malfunction reports, store inventory, and room assignments.
+                    </div>
+                </div>
+
+                <div class="screenshot-item reveal reveal-delay-2">
+                    <div class="screenshot-header">
+                        <div class="screenshot-title">
+                            <div class="screenshot-dot"></div>
+                            <span>Store Inventory</span>
+                        </div>
+                        <div class="screenshot-badge">Registration Module</div>
+                    </div>
+                    <div class="screenshot-body">
+                        <img src="../equip-add-device.png" alt="Add New Device form with device name and serial number fields">
+                    </div>
+                    <div class="screenshot-caption">
+                        Streamlined device registration form. New equipment is added to the store inventory with device name and serial number, making it immediately searchable and trackable across the system.
+                    </div>
+                </div>
+
+                <div class="screenshot-item full-width reveal reveal-delay-1">
+                    <div class="screenshot-header">
+                        <div class="screenshot-title">
+                            <div class="screenshot-dot"></div>
+                            <span>Total Devices Overview</span>
+                        </div>
+                        <div class="screenshot-badge">Export Module</div>
+                    </div>
+                    <div class="screenshot-body">
+                        <img src="../equip-total-devices.png" alt="Total Devices view with one-click CSV and PDF export for full inventory reporting">
+                    </div>
+                    <div class="screenshot-caption">
+                        A complete inventory snapshot at your fingertips. Supervisors can view every registered device across all departments and export the full dataset as CSV or PDF in one click, complete with timestamps and audit trail for compliance reporting.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile App Views -->
+            <div class="mobile-showcase">
+                <div class="mobile-screenshot-item reveal reveal-delay-1">
+                    <div class="screenshot-header">
+                        <div class="screenshot-title">
+                            <div class="screenshot-dot"></div>
+                            <span>System Landing Page</span>
+                        </div>
+                        <div class="screenshot-badge">Mobile View</div>
+                    </div>
+                    <div class="mobile-screenshot-body">
+                        <img src="../equip-landing.png" alt="Medical Equipment Management System landing page with Supervisor Login and Report Equipment Issue options">
+                    </div>
+                    <div class="screenshot-caption">
+                        The system entry point provides role-based access. Supervisors log in to manage inventory, while frontline staff can immediately report equipment issues without authentication barriers.
+                    </div>
+                </div>
+
+                <div class="mobile-screenshot-item reveal reveal-delay-2">
+                    <div class="screenshot-header">
+                        <div class="screenshot-title">
+                            <div class="screenshot-dot"></div>
+                            <span>Malfunction Report Form</span>
+                        </div>
+                        <div class="screenshot-badge">Mobile View</div>
+                    </div>
+                    <div class="mobile-screenshot-body">
+                        <img src="../equip-report-form.png" alt="Step 1 of malfunction report showing category selection and device type dropdown with medical equipment list">
+                    </div>
+                    <div class="screenshot-caption">
+                        Guided reporting workflow: staff select the report category and device type from a pre-populated list of all registered equipment. Structured input ensures accurate, actionable reports every time.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <section class="project-cta">
+        <div class="container">
+            <h2 class="reveal">Interested in this project?</h2>
+            <p class="reveal reveal-delay-1">I build systems that solve real operational problems in healthcare.</p>
+            <div class="cta-buttons reveal reveal-delay-2">
+                <a href="../main/#contact" class="btn btn-white"><i class="fas fa-envelope"></i> Get in Touch</a>
+                <a href="../main/#projects" class="btn btn-ghost"><i class="fas fa-arrow-left"></i> View All Projects</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Mohamed Amer Almajed. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Disclaimer
+        document.body.style.overflow = 'hidden';
+        function dismissDisclaimer() {
+            const overlay = document.getElementById('disclaimerOverlay');
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+            setTimeout(() => overlay.remove(), 400);
+        }
+
+        // Back nav scroll
+        const backNav = document.getElementById('backNav');
+        window.addEventListener('scroll', () => backNav.classList.toggle('scrolled', window.scrollY > 20));
+
+        // Reveal on scroll
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Image protection
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'IMG') { e.preventDefault(); }
+        });
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U')) { e.preventDefault(); }
+        });
+    </script>
+</body>
+</html>
